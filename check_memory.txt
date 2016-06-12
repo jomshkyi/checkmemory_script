@@ -33,36 +33,36 @@ fi
 while getopts ":w:c:e:" opt; do
   case $opt in
      w)
-      warn=$OPTARG
+      warning_treshold=$OPTARG
         ;;
     c)
-      crit=$OPTARG
+      critical_treshold=$OPTARG
         ;;
     e)
-      mail=$OPTARG
+      email_address=$OPTARG
         ;;
   esac
 done
 
 
-if [ $warn -lt $crit ]; then   #script ensure that warning treshold was less than crit treshold
-        if [ $MEMORY_USAGE -lt $warn ]; then
-                echo "The memory usage is normarl state: 0"
+if [ $warning_treshold -lt $critical_treshold ]; then   #script ensure that warning treshold was less than crit treshold
+        if [ $MEMORY_USAGE -lt $warning_treshold ]; then
+                echo -e "The memory usage is normarl state: 0\n"
                 exit 0
-        elif [[ $MEMORY_USAGE -ge $warn && $MEMORY_USAGE -lt $crit ]]; then
-                echo "The mermory usage is in warning state: 1";
+        elif [[ $MEMORY_USAGE -ge $warning_treshold && $MEMORY_USAGE -lt $critical_treshold ]]; then
+                echo -e "The mermory usage is in warning state: 1\n";
                 exit 1
-        elif [ $MEMORY_USAGE -ge $crit ]; then
+        elif [ $MEMORY_USAGE -ge $critical_treshold ]; then
                 echo -e "The memory usage is in critical state. Please free up some memory space: 2\n";
                 $(top -b -a | head -n 17 | tail | awk '{ print $1" "$10" "$12 }'  > /tmp/top_process.txt)
                 datetime=$(date +%Y%m%d" "%H":"%M)
-                $(mail -s "$datetime memory check - critical" < /tmp/top_process.txt $mail)
-                echo -e "Mail Sent! Please check the inbox of email address\n"
+                $(mail -s "$datetime memory check - critical" < /tmp/top_process.txt $email_address)
+                echo -e "Mail Sent! Please check the inbox of $email_address for top ten process\n"
                 exit 2
         fi
 
 else
    echo -e "${RED}The warning treshold must be less than the critical treshold!\n";
-   echo -e "${WHITE}The value must be greater than $warn.\n Please try again!\n"
+   echo -e "${WHITE}The value of critical treshold must be greater than $warning_treshold.\n Please try again!\n"
    exit 0
 fi
