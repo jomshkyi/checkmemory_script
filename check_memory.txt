@@ -16,7 +16,6 @@ function showhelp {
    echo -e "The parameters of -c must be greater than -w \n"
 }
 
-
 # Show help when no argument is provided.
 if [ $# -eq 0 ]; then   #ensure that there is argument
     echo -e "\n${RED} No argument provided!\n";
@@ -43,7 +42,6 @@ while getopts ":w:c:e:" opt; do
         ;;
   esac
 done
-
 
 if [ $warning_treshold -lt $critical_treshold ]; then   #script ensure that warning treshold was less than crit treshold
         if [ $MEMORY_USAGE -lt $warning_treshold ]; then
