@@ -52,7 +52,7 @@ if [ $warning_treshold -lt $critical_treshold ]; then   #script ensure that warn
                 exit 1
         elif [ $MEMORY_USAGE -ge $critical_treshold ]; then
                 echo -e "The memory usage is in critical state. Please free up some memory space: 2\n";
-                $(top -b -a | head -n 17 | tail | awk '{ print $1" "$10" "$12 }'  > /tmp/top_process.txt)
+                $(top -b -a | head -n 17 | tail | awk '{ print $1" "$10" "$12 }'  > /tmp/top_process.txt) #omit the $10 if the user don't want the memory usage of each process
                 datetime=$(date +%Y%m%d" "%H":"%M)
                 $(mail -s "$datetime memory check - critical" < /tmp/top_process.txt $email_address)
                 echo -e "Mail Sent! Please check the inbox of $email_address for top ten process\n"
